@@ -1,57 +1,103 @@
 <script setup lang="ts">
-import NavFooter from '@/components/NavFooter.vue';
-import NavMain from '@/components/NavMain.vue';
-import NavUser from '@/components/NavUser.vue';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
-import AppLogo from './AppLogo.vue';
+import type { SidebarProps } from '@/components/ui/sidebar'
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-];
+import {
+  AudioWaveform,
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  GalleryVerticalEnd,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+} from "lucide-vue-next"
+import NavMain from '@/components/NavMain.vue'
+import NavProjects from '@/components/NavProjects.vue'
+import NavUser from '@/components/NavUser.vue'
+import TeamSwitcher from '@/components/TeamSwitcher.vue'
 
-const footerNavItems: NavItem[] = [
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarRail,
+} from '@/components/ui/sidebar'
+
+const props = withDefaults(defineProps<SidebarProps>(), {
+  collapsible: "icon",
+})
+
+// This is sample data.
+const data = {
+  teams: [
     {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
+      name: "Acme Inc",
+      logo: GalleryVerticalEnd,
+      plan: "Enterprise",
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#vue',
-        icon: BookOpen,
+      name: "Acme Corp.",
+      logo: AudioWaveform,
+      plan: "Startup",
     },
-];
+    {
+      name: "Evil Corp.",
+      logo: Command,
+      plan: "Free",
+    },
+  ],
+  navMain: [
+    {
+      title: "Dashboards",
+      icon: SquareTerminal,
+      route: "#",
+      isActive: true,
+      items: [
+        { title: "Dashboard", route: "dashboard" },               
+        { title: "Dashboard 2", route: "dashboard2" },
+        { title: "Dashboard 3", route: "dashboard3" },  
+      ],
+    },
+    {
+      title: "Beispielseiten",
+      icon: Bot,
+      items: [
+        { title: "Beispielseite 1", route: "beispielseite1" },
+        { title: "Beispielseite 2", route: "beispielseite2" },
+        { title: "Beispielseite 3", route: "beispielseite3" },
+      ],
+    },
+    {
+      title: "Einstellungen",
+      icon: Settings2,
+      items: [
+        { title: "Profileinstellungen", route: "profile.edit" },   
+      ],
+    },
+  ],
+  projects: [
+    { name: "Projekt 1", icon: Frame, route: "project1" },
+    { name: "Projekt 2", icon: PieChart, route: "project2" },
+    { name: "Projekt 3", icon: Map, route: "project3" },
+  ],
+}
 </script>
 
 <template>
-    <Sidebar collapsible="icon" variant="sidebar">
-        <SidebarHeader>
-            <SidebarMenu>
-                <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
-                        <Link :href="route('dashboard')">
-                            <AppLogo />
-                        </Link>
-                    </SidebarMenuButton>
-                </SidebarMenuItem>
-            </SidebarMenu>
-        </SidebarHeader>
-
-        <SidebarContent>
-            <NavMain :items="mainNavItems" />
-        </SidebarContent>
-
-        <SidebarFooter>
-            <NavFooter :items="footerNavItems" />
-            <NavUser />
-        </SidebarFooter>
-    </Sidebar>
-    <slot />
+  <Sidebar v-bind="props">
+    <SidebarHeader>
+      <TeamSwitcher :teams="data.teams" />
+    </SidebarHeader>
+    <SidebarContent>
+      <NavMain :items="data.navMain" />
+      <NavProjects :projects="data.projects" />
+    </SidebarContent>
+    <SidebarFooter>
+      <NavUser :user="data.user" />
+    </SidebarFooter>
+    <SidebarRail />
+  </Sidebar>
 </template>
